@@ -1,0 +1,1 @@
+{"version":3,"file":"error-event-wire.d.ts","sourceRoot":"","sources":["../../src/storage/error-event-wire.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,wBAAwB,EAAE,MAAM,qBAAqB,CAAC;AAEpE,MAAM,WAAW,sBAAuB,SAAQ,wBAAwB;IACtE,GAAG,CAAC,EAAE,MAAM,CAAC;IACb,EAAE,CAAC,EAAE,MAAM,CAAC;IACZ,UAAU,EAAE,MAAM,CAAC;IACnB,UAAU,CAAC,EAAE,MAAM,CAAC;IACpB,QAAQ,CAAC,EAAE,MAAM,CAAC;CACnB"}
