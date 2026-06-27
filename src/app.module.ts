@@ -8,6 +8,8 @@ import redisConfig from '#src/config/redis.config';
 import activityLogConfig from '#src/config/activity-log.config';
 import errorLogConfig from '#src/config/error-log.config';
 import logsSharedConfig from '#src/config/logs-shared.config';
+import logsQueryConfig from '#src/config/logs-query.config';
+import { LogsQueryModule } from '#src/shared/logs-query.module';
 import { RedisModule } from '#src/redis/redis.module';
 import { EventsModule } from '#src/events/events.module';
 import { QueryModule } from '#src/query/query.module';
@@ -41,12 +43,14 @@ const mongoImports = mongoEnabled
         mongoConfig,
         redisConfig,
         logsSharedConfig,
+        logsQueryConfig,
         activityLogConfig,
         errorLogConfig,
       ],
       envFilePath: ['.env.local', '.env'],
     }),
     ...mongoImports,
+    LogsQueryModule,
     RedisModule,
     HealthModule,
   ],

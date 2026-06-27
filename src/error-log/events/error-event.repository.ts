@@ -64,7 +64,7 @@ export class ErrorEventRepository {
   }
 
   async queryEvents(
-    params: ErrorEventQueryParams & { limit: number },
+    params: ErrorEventQueryParams & { limit: number; hint?: string },
   ): Promise<ErrorEventListResult> {
     const filter = buildErrorEventMongoFilter({
       ...params,
@@ -72,12 +72,15 @@ export class ErrorEventRepository {
     });
 
     const limit = Math.min(Math.max(params.limit, 1), 100);
-    const rows = await this.model
+    let query = this.model
       .find(filter)
       .sort({ occurredAt: -1, _id: -1 })
       .limit(limit + 1)
-      .lean()
-      .exec();
+      .lean();
+    if (params.hint) {
+      query = query.hint(params.hint);
+    }
+    const rows = await query.exec();
 
     const hasMore = rows.length > limit;
     const data = hasMore ? rows.slice(0, limit) : rows;

@@ -222,4 +222,31 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   buildKey(...parts: (string | number | undefined)[]): string {
     return this.keyBuilder.build(...parts);
   }
+
+  async getJson<T>(absoluteKey: string): Promise<T | null> {
+    if (!this.client || !this.isConnected()) {
+      return null;
+    }
+    const raw = await this.client.get(absoluteKey);
+    if (!raw) {
+      return null;
+    }
+    return JSON.parse(raw) as T;
+  }
+
+  async setJson(
+    absoluteKey: string,
+    value: unknown,
+    ttlSec: number,
+  ): Promise<void> {
+    if (!this.client || !this.isConnected()) {
+      return;
+    }
+    const payload = JSON.stringify(value);
+    if (ttlSec > 0) {
+      await this.client.setex(absoluteKey, ttlSec, payload);
+      return;
+    }
+    await this.client.set(absoluteKey, payload);
+  }
 }

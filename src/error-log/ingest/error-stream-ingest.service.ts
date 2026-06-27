@@ -47,8 +47,8 @@ export class ErrorStreamIngestService implements OnModuleInit, OnModuleDestroy {
       stream: cfg.redisStream,
       group: cfg.consumerGroup,
       consumer: cfg.consumerName,
-      batchSize: 20,
-      blockMs: 5000,
+      batchSize: cfg.consumerBatchSize,
+      blockMs: cfg.consumerBlockMs,
       onMessage: (item) =>
         ingestErrorStreamMessage({
           id: item.id,

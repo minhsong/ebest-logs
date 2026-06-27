@@ -7,6 +7,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import type { AllConfigType } from '#src/config/config.type';
 import { RedisService } from '#src/redis/redis.service';
+import { runRedisStreamConsumerLoop } from '#src/shared/redis-stream-consumer.loop';
 import { ActivityEventRepository } from '#src/events/activity-event.repository';
 import { ingestActivityStreamMessage } from './activity-stream-ingest.handler';
 
@@ -42,9 +43,32 @@ export class ActivityStreamIngestService
       cfg.redisStream,
       cfg.consumerGroup,
     );
-    this.loopPromise = this.consumeLoop();
+    this.loopPromise = runRedisStreamConsumerLoop({
+      running: () => this.running,
+      redisService: this.redisService,
+      stream: cfg.redisStream,
+      group: cfg.consumerGroup,
+      consumer: cfg.consumerName,
+      batchSize: cfg.consumerBatchSize,
+      blockMs: cfg.consumerBlockMs,
+      onMessage: (item) =>
+        ingestActivityStreamMessage({
+          id: item.id,
+          message: item.message,
+          cfg,
+          redisService: this.redisService,
+          eventRepository: this.eventRepository,
+          maxRetries: cfg.maxIngestRetries,
+          logger: this.logger,
+        }),
+      onLoopError: (error) => {
+        this.logger.warn(
+          `Ingest loop error: ${error instanceof Error ? error.message : String(error)}`,
+        );
+      },
+    });
     this.logger.log(
-      `Ingest worker started — stream=${cfg.redisStream} group=${cfg.consumerGroup}`,
+      `Ingest worker started — stream=${cfg.redisStream} group=${cfg.consumerGroup} batch=${cfg.consumerBatchSize}`,
     );
   }
 
@@ -54,42 +78,4 @@ export class ActivityStreamIngestService
       await this.loopPromise.catch(() => undefined);
     }
   }
-
-  private async consumeLoop(): Promise<void> {
-    const cfg = this.configService.getOrThrow('activityLog', { infer: true });
-    while (this.running) {
-      try {
-        const batch = await this.redisService.xReadGroup(
-          cfg.consumerGroup,
-          cfg.consumerName,
-          cfg.redisStream,
-          20,
-          5000,
-        );
-        if (!batch?.length) {
-          continue;
-        }
-        for (const item of batch) {
-          await ingestActivityStreamMessage({
-            id: item.id,
-            message: item.message,
-            cfg,
-            redisService: this.redisService,
-            eventRepository: this.eventRepository,
-            maxRetries: cfg.maxIngestRetries,
-            logger: this.logger,
-          });
-        }
-      } catch (error) {
-        this.logger.warn(
-          `Ingest loop error: ${error instanceof Error ? error.message : String(error)}`,
-        );
-        await sleep(1000);
-      }
-    }
-  }
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }

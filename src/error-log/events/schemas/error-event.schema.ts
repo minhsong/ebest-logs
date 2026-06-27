@@ -75,6 +75,14 @@ ErrorEventSchema.index({ service: 1, occurredAt: -1 });
 ErrorEventSchema.index({ severity: 1, occurredAt: -1 });
 ErrorEventSchema.index({ fingerprint: 1, occurredAt: -1 });
 ErrorEventSchema.index(
+  { requestId: 1, occurredAt: -1, _id: -1 },
+  { name: 'requestId_1_occurredAt_-1__id_-1' },
+);
+ErrorEventSchema.index(
+  { service: 1, severity: 1, occurredAt: -1, _id: -1 },
+  { name: 'service_1_severity_1_occurredAt_-1__id_-1' },
+);
+ErrorEventSchema.index(
   { occurredAt: 1 },
   { expireAfterSeconds: 90 * 24 * 60 * 60 },
 );

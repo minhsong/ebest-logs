@@ -9,6 +9,14 @@ export default registerAs<ErrorLogIngestConfig>('errorLog', () => ({
     process.env.ERROR_LOG_CONSUMER_GROUP || 'error-log-workers',
   consumerName:
     process.env.ERROR_LOG_CONSUMER_NAME || `error-worker-${process.pid}`,
+  consumerBatchSize: parseInt(
+    process.env.ERROR_LOG_CONSUMER_BATCH_SIZE || '20',
+    10,
+  ),
+  consumerBlockMs: parseInt(
+    process.env.ERROR_LOG_CONSUMER_BLOCK_MS || '5000',
+    10,
+  ),
   streamMaxLen: parseInt(process.env.ERROR_LOG_STREAM_MAXLEN || '100000', 10),
   deadLetterStream:
     process.env.ERROR_LOG_DEAD_LETTER_STREAM || 'ebest:system:errors:dead',

@@ -79,6 +79,22 @@ ActivityEventSchema.index({ 'actor.userId': 1, occurredAt: -1 });
 ActivityEventSchema.index({ category: 1, occurredAt: -1 });
 ActivityEventSchema.index({ action: 1, occurredAt: -1 });
 ActivityEventSchema.index(
+  { module: 1, occurredAt: -1, _id: -1 },
+  { name: 'module_1_occurredAt_-1__id_-1' },
+);
+ActivityEventSchema.index(
+  { severity: 1, occurredAt: -1, _id: -1 },
+  { name: 'severity_1_occurredAt_-1__id_-1' },
+);
+ActivityEventSchema.index(
+  { module: 1, severity: 1, occurredAt: -1, _id: -1 },
+  { name: 'module_1_severity_1_occurredAt_-1__id_-1' },
+);
+ActivityEventSchema.index(
+  { requestId: 1, occurredAt: -1, _id: -1 },
+  { name: 'requestId_1_occurredAt_-1__id_-1' },
+);
+ActivityEventSchema.index(
   { occurredAt: 1 },
   { expireAfterSeconds: 365 * 24 * 60 * 60 },
 );

@@ -1,5 +1,9 @@
 import type { Types } from 'mongoose';
 
+import {
+  isExactLookupToken,
+} from '#src/shared/log-query-text.util';
+
 function escapeRegex(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -37,6 +41,24 @@ export function buildTextSearchOrConditions(q: string): Record<string, unknown>[
   }
 
   return or;
+}
+
+function buildActivityQFilter(q: string): Record<string, unknown> {
+  const trimmed = q.trim();
+  if (!trimmed) {
+    return {};
+  }
+  if (isExactLookupToken(trimmed)) {
+    return {
+      $or: [
+        { requestId: trimmed },
+        { correlationId: trimmed },
+        { eventKey: trimmed },
+        ...buildTextSearchOrConditions(trimmed),
+      ],
+    };
+  }
+  return { $or: buildTextSearchOrConditions(trimmed) };
 }
 
 export function buildActivityEventMongoFilter(params: {
@@ -106,9 +128,7 @@ export function buildActivityEventMongoFilter(params: {
   }
 
   if (params.q?.trim()) {
-    andClauses.push({
-      $or: buildTextSearchOrConditions(params.q),
-    });
+    andClauses.push(buildActivityQFilter(params.q));
   }
 
   if (params.cursor) {

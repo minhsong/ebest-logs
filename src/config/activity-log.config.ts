@@ -11,6 +11,14 @@ export default registerAs<ActivityLogIngestConfig>('activityLog', () => ({
   consumerName:
     process.env.ACTIVITY_LOG_CONSUMER_NAME ||
     `worker-${process.pid}`,
+  consumerBatchSize: parseInt(
+    process.env.ACTIVITY_LOG_CONSUMER_BATCH_SIZE || '20',
+    10,
+  ),
+  consumerBlockMs: parseInt(
+    process.env.ACTIVITY_LOG_CONSUMER_BLOCK_MS || '5000',
+    10,
+  ),
   streamMaxLen: parseInt(
     process.env.ACTIVITY_LOG_STREAM_MAXLEN || '100000',
     10,

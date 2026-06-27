@@ -62,7 +62,7 @@ export class ActivityEventRepository {
   }
 
   async queryEvents(
-    params: ActivityEventQueryParams & { limit: number },
+    params: ActivityEventQueryParams & { limit: number; hint?: string },
   ): Promise<ActivityEventListResult> {
     const filter = buildActivityEventMongoFilter({
       ...params,
@@ -70,12 +70,15 @@ export class ActivityEventRepository {
     });
 
     const limit = Math.min(Math.max(params.limit, 1), 100);
-    const rows = await this.model
+    let query = this.model
       .find(filter)
       .sort({ occurredAt: -1, _id: -1 })
       .limit(limit + 1)
-      .lean()
-      .exec();
+      .lean();
+    if (params.hint) {
+      query = query.hint(params.hint);
+    }
+    const rows = await query.exec();
 
     const hasMore = rows.length > limit;
     const data = hasMore ? rows.slice(0, limit) : rows;

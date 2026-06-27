@@ -1,7 +1,36 @@
 import type { Types } from 'mongoose';
 
+import {
+  isExactLookupToken,
+  isLikelyFingerprint,
+} from '#src/shared/log-query-text.util';
+
 function escapeRegex(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function buildErrorQFilter(q: string): Record<string, unknown> {
+  const trimmed = q.trim();
+  if (!trimmed) {
+    return {};
+  }
+  const regex = new RegExp(escapeRegex(trimmed), 'i');
+  const regexOr = [
+    { message: regex },
+    { errorType: regex },
+    { requestId: regex },
+    { fingerprint: regex },
+    { 'http.path': regex },
+  ];
+  if (isLikelyFingerprint(trimmed)) {
+    return { $or: [{ fingerprint: trimmed }, ...regexOr] };
+  }
+  if (isExactLookupToken(trimmed)) {
+    return {
+      $or: [{ requestId: trimmed }, { fingerprint: trimmed }, ...regexOr],
+    };
+  }
+  return { $or: regexOr };
 }
 
 export function buildErrorEventMongoFilter(params: {
@@ -56,16 +85,7 @@ export function buildErrorEventMongoFilter(params: {
   }
 
   if (params.q?.trim()) {
-    const regex = new RegExp(escapeRegex(params.q.trim()), 'i');
-    andClauses.push({
-      $or: [
-        { message: regex },
-        { errorType: regex },
-        { requestId: regex },
-        { fingerprint: regex },
-        { 'http.path': regex },
-      ],
-    });
+    andClauses.push(buildErrorQFilter(params.q));
   }
 
   if (andClauses.length) {
