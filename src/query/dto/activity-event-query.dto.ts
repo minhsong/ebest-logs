@@ -45,6 +45,14 @@ export class ActivityEventQueryDto implements ActivityEventQueryParams {
 
   @IsOptional()
   @IsString()
+  module?: string;
+
+  @IsOptional()
+  @IsString()
+  severity?: string;
+
+  @IsOptional()
+  @IsString()
   from?: string;
 
   @IsOptional()

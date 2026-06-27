@@ -47,6 +47,8 @@ export function buildActivityEventMongoFilter(params: {
   userId?: number;
   category?: string;
   action?: string;
+  module?: string;
+  severity?: string;
   from?: string;
   to?: string;
   requestId?: string;
@@ -70,6 +72,12 @@ export function buildActivityEventMongoFilter(params: {
   }
   if (params.action) {
     base.action = params.action;
+  }
+  if (params.module) {
+    base.module = params.module;
+  }
+  if (params.severity) {
+    base.severity = params.severity;
   }
   if (params.requestId) {
     base.requestId = params.requestId;

@@ -19,6 +19,8 @@ export class ActivityEventQueryService {
       userId: query.userId,
       category: query.category,
       action: query.action,
+      module: query.module,
+      severity: query.severity,
       from: query.from,
       to: query.to,
       requestId: query.requestId,

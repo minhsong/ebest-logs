@@ -8,6 +8,8 @@ export interface ActivityEventQueryParams {
   userId?: number;
   category?: string;
   action?: string;
+  module?: string;
+  severity?: string;
   from?: string;
   to?: string;
   requestId?: string;
