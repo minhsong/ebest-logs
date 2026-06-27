@@ -7,7 +7,7 @@ export class AppController {
   @Get()
   root() {
     return {
-      service: 'ebest-activity-log',
+      service: 'ebest-logs',
       status: 'ok',
     };
   }

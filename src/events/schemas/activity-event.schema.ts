@@ -5,9 +5,10 @@ import type {
   ActivityChange,
   ActivityEntityRefs,
   ActivitySnapshots,
-} from '@ebest/activity-log-contract';
+} from '@ebest/crm-api-types/events/activity-log';
 
-export type ActivityEventDocument = HydratedDocument<ActivityEvent>;
+/** Mongoose hydrated document — không trùng ActivityEventWireDocument (query API). */
+export type ActivityEventMongoDocument = HydratedDocument<ActivityEvent>;
 
 @Schema({
   collection: 'activity_events',

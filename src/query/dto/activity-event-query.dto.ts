@@ -1,7 +1,9 @@
 import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 import { Type } from 'class-transformer';
+import type { ActivityEventQueryParams } from '@ebest/activity-log-types';
 
-export class ActivityEventQueryDto {
+/** Nest DTO — mirror `ActivityEventQueryParams` từ @ebest/activity-log-types. */
+export class ActivityEventQueryDto implements ActivityEventQueryParams {
   @IsOptional()
   @IsString()
   cursor?: string;

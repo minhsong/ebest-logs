@@ -1,0 +1,37 @@
+{
+  "name": "@ebest/activity-log-types",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Activity Log service query + storage wire types",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": ["dist/index.d.ts"]
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@ebest/crm-api-types": "file:../../../ebest-crm-api/packages/crm-api-types"
+  },
+  "peerDependencies": {
+    "@ebest/crm-api-types": "^0.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18.18.0 || >=20.9.0"
+  }
+}

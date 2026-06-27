@@ -1,12 +1,12 @@
 {
-  "name": "ebest-activity-log",
-  "version": "0.1.0",
+  "name": "ebest-logs",
+  "version": "0.2.0",
   "private": true,
-  "description": "Business activity log service — Redis Stream ingest, MongoDB store, internal query API",
+  "description": "Unified log service — business activity + system errors (Redis Stream, MongoDB, internal query API)",
   "license": "MIT",
   "scripts": {
-    "prebuild": "npm run build:contract && rimraf dist",
-    "build:contract": "npm run build --prefix ../packages/activity-log-contract",
+    "prebuild": "npm run build:types && rimraf dist",
+    "build:types": "npm run build --prefix ../ebest-crm-api/packages/crm-api-types && npm run build --prefix ./packages/activity-log-types && npm run build --prefix ./packages/error-log-types",
     "build": "nest build",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -15,7 +15,9 @@
     "lint": "eslint \"{src,test}/**/*.ts\""
   },
   "dependencies": {
-    "@ebest/activity-log-contract": "file:../packages/activity-log-contract",
+    "@ebest/crm-api-types": "file:../ebest-crm-api/packages/crm-api-types",
+    "@ebest/activity-log-types": "file:./packages/activity-log-types",
+    "@ebest/error-log-types": "file:./packages/error-log-types",
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.0",
     "@nestjs/core": "^11.0.0",

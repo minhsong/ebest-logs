@@ -23,9 +23,9 @@ async function bootstrap() {
 
   if (appConfig?.nodeEnv !== 'production') {
     const swagger = new DocumentBuilder()
-      .setTitle('Ebest Activity Log')
-      .setDescription('Business activity log — ingest + internal query')
-      .setVersion('0.1.0')
+      .setTitle('Ebest Logs')
+      .setDescription('Unified log service — activity events + system errors')
+      .setVersion('0.2.0')
       .addApiKey(
         { type: 'apiKey', name: 'X-Internal-Api-Key', in: 'header' },
         'internal-api-key',
@@ -37,7 +37,7 @@ async function bootstrap() {
   const port = appConfig?.port ?? 3010;
   await app.listen(port, '127.0.0.1');
   console.log(
-    `ebest-activity-log listening on http://127.0.0.1:${port}/${prefix}/`,
+    `ebest-logs listening on http://127.0.0.1:${port}/${prefix}/`,
   );
 }
 

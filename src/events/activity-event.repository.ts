@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import type { ActivityEventPublishPayload } from '@ebest/activity-log-contract';
+import type { ActivityEventPublishPayload } from '@ebest/crm-api-types/events/activity-log';
+import type { ActivityEventListResult, ActivityEventQueryParams, ActivityEventWireDocument } from '@ebest/activity-log-types';
 import {
   encodeActivityLogCursor,
   parseActivityLogCursor,
@@ -9,33 +10,27 @@ import {
 import { buildActivityEventMongoFilter } from './activity-event-query-filter.util';
 import {
   ActivityEvent,
-  ActivityEventDocument,
+  ActivityEventMongoDocument,
 } from './schemas/activity-event.schema';
-
-export interface ActivityEventListResult {
-  data: Array<Record<string, unknown> & { id: string }>;
-  nextCursor?: string;
-  hasMore: boolean;
-}
 
 @Injectable()
 export class ActivityEventRepository {
   constructor(
     @InjectModel(ActivityEvent.name)
-    private readonly model: Model<ActivityEventDocument>,
+    private readonly model: Model<ActivityEventMongoDocument>,
   ) {}
 
   async upsertByEventKey(
     eventKey: string,
     doc: Omit<ActivityEvent, 'eventKey'> & { eventKey: string },
-  ): Promise<ActivityEventDocument> {
+  ): Promise<ActivityEventMongoDocument> {
     return this.model
       .findOneAndUpdate(
         { eventKey },
         { $setOnInsert: doc },
         { upsert: true, new: true },
       )
-      .exec() as Promise<ActivityEventDocument>;
+      .exec() as Promise<ActivityEventMongoDocument>;
   }
 
   buildDocument(
@@ -66,20 +61,9 @@ export class ActivityEventRepository {
     };
   }
 
-  async queryEvents(params: {
-    cursor?: string;
-    limit: number;
-    customerId?: number;
-    invoiceId?: number;
-    classId?: number;
-    userId?: number;
-    category?: string;
-    action?: string;
-    from?: string;
-    to?: string;
-    requestId?: string;
-    q?: string;
-  }): Promise<ActivityEventListResult> {
+  async queryEvents(
+    params: ActivityEventQueryParams & { limit: number },
+  ): Promise<ActivityEventListResult> {
     const filter = buildActivityEventMongoFilter({
       ...params,
       parseCursor: parseActivityLogCursor,
@@ -105,10 +89,24 @@ export class ActivityEventRepository {
         : undefined;
 
     return {
-      data: data.map((row) => ({
-        id: String(row._id),
-        ...row,
-      })),
+      data: data.map((row) => {
+        const id = String(row._id);
+        return {
+          ...(row as unknown as ActivityEventWireDocument),
+          _id: id,
+          id,
+          occurredAt:
+            row.occurredAt instanceof Date
+              ? row.occurredAt.toISOString()
+              : String(row.occurredAt),
+          ingestedAt:
+            row.ingestedAt instanceof Date
+              ? row.ingestedAt.toISOString()
+              : row.ingestedAt
+                ? String(row.ingestedAt)
+                : undefined,
+        };
+      }),
       nextCursor,
       hasMore,
     };

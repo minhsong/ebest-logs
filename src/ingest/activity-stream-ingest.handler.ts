@@ -2,7 +2,7 @@ import {
   buildActivityEventKey,
   validateActivityIngestPayload,
   type ActivityEventPublishPayload,
-} from '@ebest/activity-log-contract';
+} from '@ebest/crm-api-types/events/activity-log';
 import type { ActivityEventRepository } from '#src/events/activity-event.repository';
 import type { RedisService } from '#src/redis/redis.service';
 import type { ActivityLogIngestConfig } from '#src/config/activity-log-config.type';

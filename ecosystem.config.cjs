@@ -1,7 +1,7 @@
 /**
  * PM2 — production (VPS)
  *
- *   cd ebest-activity-log
+ *   cd ebest-logs
  *   npm run build
  *   pm2 start ecosystem.config.cjs
  *   pm2 save
@@ -11,7 +11,7 @@
 module.exports = {
   apps: [
     {
-      name: 'ebest-activity-log',
+      name: 'ebest-logs',
       script: 'dist/main.js',
       instances: 1,
       exec_mode: 'fork',

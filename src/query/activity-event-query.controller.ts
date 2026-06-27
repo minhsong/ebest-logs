@@ -3,7 +3,7 @@ import { ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { InternalApiKeyGuard } from '#src/guards/internal-api-key.guard';
 import { ActivityEventQueryService } from './activity-event-query.service';
 import { ActivityEventQueryDto } from './dto/activity-event-query.dto';
-import type { ActivityEventListResult } from '#src/events/activity-event.repository';
+import type { ActivityEventListResult } from '@ebest/activity-log-types';
 
 @ApiTags('internal-activity-events')
 @ApiSecurity('internal-api-key')

@@ -6,7 +6,7 @@ export default registerAs<RedisConfig>('redis', () => ({
   port: parseInt(process.env.REDIS_PORT || '6379', 10),
   password: process.env.REDIS_PASSWORD,
   db: parseInt(process.env.REDIS_DB || '0', 10),
-  keyPrefix: process.env.REDIS_KEY_PREFIX || 'ebest-activity-log:',
+  keyPrefix: process.env.REDIS_KEY_PREFIX || 'ebest-logs:',
   connectTimeout: parseInt(process.env.REDIS_CONNECT_TIMEOUT || '10000', 10),
   commandTimeout: parseInt(process.env.REDIS_COMMAND_TIMEOUT || '5000', 10),
   retryStrategy: process.env.REDIS_RETRY_STRATEGY === 'true',

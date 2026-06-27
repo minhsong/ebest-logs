@@ -32,7 +32,7 @@ export class HealthController {
     const ping = await this.redisService.ping();
     return {
       status: 'ok',
-      service: 'ebest-activity-log',
+      service: 'ebest-logs',
       mongo,
       redis:
         ping === 'DISABLED'

@@ -14,7 +14,8 @@ export class InternalApiKeyGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const expected =
-      this.configService.get('activityLog', { infer: true })?.internalApiKey ??
+      this.configService.get('logsShared', { infer: true })?.internalApiKey ||
+      this.configService.get('activityLog', { infer: true })?.internalApiKey ||
       '';
     if (!expected) {
       throw new UnauthorizedException('INTERNAL_API_KEY is not configured');

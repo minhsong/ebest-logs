@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ActivityEventRepository } from '#src/events/activity-event.repository';
-import type { ActivityEventListResult } from '#src/events/activity-event.repository';
+import type { ActivityEventListResult } from '@ebest/activity-log-types';
 import { ActivityEventQueryDto } from './dto/activity-event-query.dto';
 
 @Injectable()

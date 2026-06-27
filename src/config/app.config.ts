@@ -27,7 +27,7 @@ export default registerAs<AppConfig>('app', () => {
   validateConfig(process.env, EnvValidator);
   return {
     nodeEnv: process.env.NODE_ENV || 'development',
-    name: process.env.APP_NAME || 'ebest-activity-log',
+    name: process.env.APP_NAME || 'ebest-logs',
     port: process.env.APP_PORT
       ? parseInt(process.env.APP_PORT, 10)
       : process.env.PORT
