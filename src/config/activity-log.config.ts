@@ -30,10 +30,6 @@ export default registerAs<ActivityLogIngestConfig>('activityLog', () => ({
     process.env.ACTIVITY_LOG_RETENTION_DAYS || '365',
     10,
   ),
-  internalApiKey:
-    process.env.INTERNAL_API_KEY?.trim() ||
-    process.env.ACTIVITY_LOG_INTERNAL_API_KEY?.trim() ||
-    '',
   maxIngestRetries: parseInt(
     process.env.ACTIVITY_LOG_INGEST_MAX_RETRIES || '3',
     10,
